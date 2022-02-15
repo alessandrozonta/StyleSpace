@@ -39,7 +39,7 @@ def Vis(bname,suffix,out,rownames=None,colnames=None):
 
 
 def LoadData(img_path):
-    tmp=img_path+'S'
+    tmp=img_path+'S_mine'
     with open(tmp, "rb") as fp:   #Pickling
         s_names,all_s=pickle.load( fp)
     dlatents=all_s
@@ -117,7 +117,7 @@ class Manipulator():
         
         self.Vis=Vis
         self.noise_constant={}
-        
+        print(self.s_names)
         for i in range(len(self.s_names)):
             tmp1=self.s_names[i].split('/')
             if not 'ToRGB' in tmp1:
@@ -234,7 +234,12 @@ class Manipulator():
         return all_s
         
     
-    
+    def W2S_all(self,dlatent_tmp):
+        
+        all_s = self.sess.run(
+            self.s_names,
+            feed_dict={'G_synthesis_1/dlatents_in:0': dlatent_tmp})
+        return all_s, self.s_names
     
     
     
@@ -246,16 +251,23 @@ if __name__ == "__main__":
     
     M=Manipulator(dataset_name='ffhq')
     
-    
+    dlatend = np.load("dark_latents.npy")
+    s, names = M.W2S_all(dlatend)
+    save_tmp=[names,s]
+    save_name='S_mine_dark'
+    output_path='npy/ffhq'
+    tmp=output_path+'/'+save_name
+    with open(tmp, "wb") as fp:
+        pickle.dump(save_tmp, fp)
     #%%
-    M.alpha=[-5,0,5]
-    M.num_images=20
-    lindex,cindex=6,501
+    # M.alpha=[-5,0,5]
+    # M.num_images=20
+    # lindex,cindex=6,501
     
-    M.manipulate_layers=[lindex]
-    codes,out=M.EditOneC(cindex) #dlatent_tmp
-    tmp=str(M.manipulate_layers)+'_'+str(cindex)
-    M.Vis(tmp,'c',out)
+    # M.manipulate_layers=[lindex]
+    # codes,out=M.EditOneC(cindex) #dlatent_tmp
+    # tmp=str(M.manipulate_layers)+'_'+str(cindex)
+    # M.Vis(tmp,'c',out)
     
     
     

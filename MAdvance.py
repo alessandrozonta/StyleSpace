@@ -19,7 +19,7 @@ class MAdvance(Manipulator):
         self.num_m=10 #number of output
         self.threshold1=0.5 #pass this ratio
         self.threshold2=0.25 #gap between first and second
-        self.w=np.load('./npy/'+dataset_name+'/W.npy')
+        # self.w=np.load('./npy/'+dataset_name+'/W.npy')
         
         self.code_mean2=np.concatenate(self.code_mean)
         self.code_std2=np.concatenate(self.code_std)
